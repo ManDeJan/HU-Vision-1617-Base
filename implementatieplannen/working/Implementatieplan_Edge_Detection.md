@@ -48,3 +48,7 @@ Sources: [[1]](https://github.com/hasanakg/Canny-Edge-Detector/blob/master/Canny
 ## Implementatie
 
 Wij gaan onze edge detection in het pre proccesing deel van de face recognition software schrijven.
+
+## Evaluatie
+
+Wij willen gaan testen op het resultaat van onze edge detection en deze vergelijken met de bestaande edge detection en de edge detection vanuit OpenCV. Daarna gaan we kijken welke het beste resultaat heeft met betrekking tot face recognition. Ook lijkt het ons goed om de 3 implementaties testen op performance.
