@@ -42,4 +42,5 @@ Wij hebben ervoor gekozen Canny edge detection toe te gaan passen, na verschille
 zijn we tot de conclusie gekomen dat voor gezichtsherkenning (en de meeste andere situaties) canny edge detection het beste resultaat oplevert.
 
 Aangenomen dat we alleen de edge detection hoeven te implementeren en er op kunnen vertrouwen dat de preprocessing werkbaar is.
-Zien wij het implementeren van Canny edge detection haalbaar. Gebaseert op het feit dat wij verschillende al bestaande implementaties hebben bekeken en deze Goed te begrijpen vonden [[1]](https://github.com/hasanakg/Canny-Edge-Detector/blob/master/Canny%20Edge%20Detect/canny.cpp) [[2]](https://github.com/opencv/opencv/blob/05b15943d6a42c99e5f921b7dbaa8323f3c042c6/modules/imgproc/src/canny.cpp) [[3]](http://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/canny_detector/canny_detector.html)
+Zien wij het implementeren van Canny edge detection haalbaar. Gebaseerd op het feit dat wij verschillende al bestaande implementaties hebben bekeken en deze goed te begrijpen vonden.  
+Sources: [[1]](https://github.com/hasanakg/Canny-Edge-Detector/blob/master/Canny%20Edge%20Detect/canny.cpp) [[2]](https://github.com/opencv/opencv/blob/05b15943d6a42c99e5f921b7dbaa8323f3c042c6/modules/imgproc/src/canny.cpp) [[3]](http://docs.opencv.org/2.4/doc/tutorials/imgproc/imgtrans/canny_detector/canny_detector.html)
