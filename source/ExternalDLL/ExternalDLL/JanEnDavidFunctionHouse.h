@@ -59,14 +59,14 @@ IntensityImage* combineImage(const IntensityImage &image1, const IntensityImage 
         for (size_t j = 0; j < image1.getWidth(); j++) {
             int value = sqrt(pow(image1.getPixel(j, i), 2) + pow(image2.getPixel(j, i), 2));
             if(value > 255) value = 255;
-            
+            if(value < 0) value = 0;
             returnImage->setPixel(j, i, value);
         }
     }
     return returnImage;
 }
 
-IntensityImage* kernelApplyer(const IntensityImage &image, kernel_type kernel) {
+IntensityImage* kernelApplyer(const IntensityImage &image, kernel_type kernel, bool convolution = false) {
     // Print kernel
     uint kwidth = kernel.size();
     uint kheight = kwidth;
@@ -93,8 +93,12 @@ IntensityImage* kernelApplyer(const IntensityImage &image, kernel_type kernel) {
             }
             if(newPekel > 255) newPekel = 255;
             if(newPekel < 0) newPekel = 0;
-
-            returnImage->setPixel(x, y, newPekel);
+            
+            if (convolution == false){
+                returnImage->setPixel(x, y, newPekel);
+            } else {
+                returnImage->setPixel(x, y, (newPekel * image.getPixel(x, y)));
+            }
         }
     }
 

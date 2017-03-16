@@ -11,7 +11,7 @@ afbeelding kijken om de harde lijnen zichtbaar te maken voor andere algoritmes.
 
 ## Doel
 Ons doel is het implementeren van een edge detection binnen het bestaande Vision programma aangeleverd door de HU.
-De onderliggende doelen die wij hiermee willen bereiken zijn:
+Onze persoonlijke doelen zijn die wij hiermee willen bereiken zijn:
 - Het leren implementeren van een edge dection algoritme.
 - Het leren omgaan met kernels (in relatie tot vision).
 - Het gebruik van thresholding om het uiteindelijk resultaat te verduidelijken.
@@ -32,10 +32,11 @@ Hieruit zijn de volgende kandidaaten gebleeken:
 
 Elke methode heeft natuurlijk zijn voor en nadelen,
 
-Voordelen en nadelen:
 
+## Keuze
 
-
+Wij hebben ervoor gekozen Canny edge detection toe te gaan passen, na verschillende papers gelezen te hebben
+zijn we tot de conclusie gekomen dat voor gezichtsherkenning (en de meeste andere situaties) canny edge detection het beste resultaat oplevert.
 
                       | voordelen                                                                                         | nadelen
 ---------------------:|:--------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -46,10 +47,8 @@ Laplacian of Gaussian | Vinden van de juiste plaatsen van de edges door het test
 [[1]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.301.927&rep=rep1&type=pdf)
 source
 
-## Keuze
 
-Wij hebben ervoor gekozen Canny edge detection toe te gaan passen, na verschillende papers gelezen te hebben
-zijn we tot de conclusie gekomen dat voor gezichtsherkenning (en de meeste andere situaties) canny edge detection het beste resultaat oplevert.
+
 
 Aangenomen dat we alleen de edge detection hoeven te implementeren en er op kunnen vertrouwen dat de preprocessing werkbaar is.
 Zien wij het implementeren van Canny edge detection haalbaar. Gebaseerd op het feit dat wij verschillende al bestaande implementaties hebben bekeken en deze goed te begrijpen vonden.
