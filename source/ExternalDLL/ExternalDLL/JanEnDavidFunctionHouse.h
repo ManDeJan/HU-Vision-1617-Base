@@ -1,6 +1,7 @@
 #pragma once
 #include "StudentPreProcessing.h"
 #include <cmath>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <vector>
@@ -45,8 +46,9 @@ void kernelPrinter(kernel_type kernel) {
     }
 }
 
-IntensityImage* combineImage(const IntensityImage &image1, const IntensityImage &image2) {
-    if(image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()); {
+// This function is no longer needed
+IntensityImage *combineImage(const IntensityImage &image1, const IntensityImage &image2) {
+    if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
         // throw "ALLES GAAT FOUT ALLES BRAND WAAROM DOE JE DIT";
         std::cout << "Non matching imageheights" << '\n';
         std::cout << "x1, y1: " << image1.getWidth() << ", " << image1.getHeight() << '\n';
@@ -58,47 +60,58 @@ IntensityImage* combineImage(const IntensityImage &image1, const IntensityImage 
     for (size_t i = 0; i < image1.getHeight(); i++) {
         for (size_t j = 0; j < image1.getWidth(); j++) {
             int value = sqrt(pow(image1.getPixel(j, i), 2) + pow(image2.getPixel(j, i), 2));
-            if(value > 255) value = 255;
-            if(value < 0) value = 0;
+            if (value >= 255) value = 255;
+            if (value <= 0) value = 0;
             returnImage->setPixel(j, i, value);
         }
     }
     return returnImage;
 }
 
-IntensityImage* kernelApplyer(const IntensityImage &image, kernel_type kernel, bool convolution = false) {
+IntensityImage *kernelApplyer(const IntensityImage &image, std::vector<kernel_type> kernels,
+                              std::function<int(std::vector<int>)> merge = [](std::vector<int> a) {
+                                  int total = 0;
+                                  for (auto x : a) {
+                                      total += x;
+                                  }
+                                  return total;
+                              }) {
     // Print kernel
-    uint kwidth = kernel.size();
+
+    uint kwidth = kernels[0].size();
     uint kheight = kwidth;
-    kernelPrinter(kernel);
+    kernelPrinter(kernels[0]);
 
     // IntensityImagePrivate returnImage = IntensityImagePrivate(image.getWidth(), image.getHeight());
     IntensityImage *returnImage = ImageFactory::newIntensityImage(image.getWidth(), image.getHeight());
 
     for (int y = 0; y < image.getHeight(); y++) {
         for (int x = 0; x < image.getWidth(); x++) {
-            int newPekel = 0;
+
+            std::vector<int> newPekels = { 0 };
+            int              newPekel = 0;
+            newPekels.reserve(kernels.size());
             for (int i = 0; i < kheight; i++) {
                 for (int j = 0; j < kwidth; j++) {
-                    int realX = x + j - kwidth/2;
-                    int realY = y + i - kheight/2;
+                    int realX = x + j - kwidth / 2;
+                    int realY = y + i - kheight / 2;
                     if (realX < 0) realX = 0;
                     if (realX > image.getWidth()) realX = image.getWidth();
                     if (realY < 0) realY = 0;
                     if (realY > image.getHeight()) realY = image.getHeight();
 
-                    newPekel += image.getPixel(realX, realY) * kernel[i][j];
+                    for (size_t k = 0; k < kernels.size(); k++) {
+                        newPekels[k] += image.getPixel(realX, realY) * kernels[k][i][j];
+                    }
                     // std::cout << realX << ' ' << realY << '\n';
                 }
             }
-            if(newPekel > 255) newPekel = 255;
-            if(newPekel < 0) newPekel = 0;
-            
-            if (convolution == false){
-                returnImage->setPixel(x, y, newPekel);
-            } else {
-                returnImage->setPixel(x, y, (newPekel * image.getPixel(x, y)));
-            }
+            newPekel = merge(newPekels);
+
+            if (newPekel > 255) newPekel = 255;
+            if (newPekel < 0) newPekel = 0;
+
+            returnImage->setPixel(x, y, (uint8_t)newPekel);
         }
     }
 
