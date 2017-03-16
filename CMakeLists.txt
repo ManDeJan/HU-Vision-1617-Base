@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(vissen)
+project(edgy)
 
 enable_testing()
 
@@ -20,7 +20,7 @@ set(cxxflags
     "-std=c++14"
     "-g3"
     "-ggdb"
-    "-O1"
+    "-O3"
     #"-flto"
     ${warnings})
 
@@ -62,5 +62,5 @@ set (sources
     source/ExternalDLL/ExternalDLL/RGBImagePrivate.cpp)
 
 find_package(OpenCV REQUIRED)
-add_executable(vissen ${sources})
-target_link_libraries(vissen ${OpenCV_LIBS})
+add_executable(edgy ${sources})
+target_link_libraries(edgy ${OpenCV_LIBS})
