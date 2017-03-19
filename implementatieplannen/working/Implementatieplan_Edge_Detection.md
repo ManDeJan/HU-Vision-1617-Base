@@ -1,3 +1,4 @@
+
 # Implementatieplan Edge Detection
 
 Jan Halsema en David de Jong, 23-2-2017
@@ -21,7 +22,7 @@ Onze persoonlijke doelen zijn die wij hiermee willen bereiken zijn:
 
 met natuurlijk als uiteindelijk doel om een voldoende te halen voor het vak Vision.
 
-<!-- We willen graag de gezicht uitlijning in pasfoto’s gaan herkennen. We willen graag een plaatje waar we alle edges duidelijk zien zodat een computer makkelijk features van een gezicht kan gaan detecteren. -->
+<!-- We willen graag de gezicht uitlijning in pasfoto’s gaan herkennen. We willen graag een plaatje waar we alle edges duidelijk zien zodat een computer simpel features van een gezicht kan gaan detecteren. -->
 
 ## Methoden
 Om dit doel te bereiken hebben wij kort onderzoek gedaan naar verschillende methodes van edge detection.
@@ -35,13 +36,13 @@ Hieruit zijn de volgende kandidaten gebleken:
 - [Prewitt](https://en.wikipedia.org/wiki/Prewitt_operator)
 - [Sobel](https://en.wikipedia.org/wiki/Sobel_operator)
 
-Elke methode heeft natuurlijk zijn voor en nadelen, Sobel en Prewitt zijn beiden simpel te implementeren maar zijn gevoellig voor ruis
+Elke methode heeft natuurlijk zijn voor en nadelen, Sobel en Prewitt zijn beiden simpel te implementeren maar zijn gevoelig voor ruis
 en zijn vaak inaccuraat. Zero crossing, Laplacian bijvoorbeeld, heeft als voordeel dat het in een kernel alle richtingen controleert en 
-ook vaste kenmerken heeft in alle richtingen. Dit resulteert er alleen in dat deze kernel ook kan reageeren op edges die al gevonden zijn wat in een
-vervorming of kleine verplaatstin kan lijden. De Laplacian of Gaussian controleert een grooter gebied om de pixel heen om vergelijkingen te maken wat er tot
-lijd dat vaak d juiste edges worden gevonden. De groote van de kernel leid er alleen toe dat er fouten worden gecreeert op hoeken en curves
-waar de intensiteit van het greisniveau verschilt. Als laatste hebben we nog Canny edge detection waarin vooral naar de hiervoor genoemde methodes word gekeken 
-en word geprobeert dezen te integreren met elkaar om tot een verbeterd resulaat te komen. Hierdoor word het nadeel van Canny al duidelijk:
+ook vaste kenmerken heeft in alle richtingen. Dit resulteert er alleen in dat deze kernel ook kan reageren op edges die al gevonden zijn wat in een
+vervorming of kleine verplaatsing kan lijden. De Laplacian of Gaussian controleert een groter gebied om de pixel heen om vergelijkingen te maken wat er tot
+lijd dat vaak d juiste edges worden gevonden. De grootte van de kernel leid er alleen toe dat er fouten worden gecreëerd op hoeken en curves
+waar de intensiteit van het grijsniveau verschilt. Als laatste hebben we nog Canny edge detection waarin vooral naar de hiervoor genoemde methodes word gekeken 
+en word geprobeerd dezen te integreren met elkaar om tot een verbeterd resultaat te komen. Hierdoor word het nadeel van Canny al duidelijk:
 Canny is moelijker te implementeren door de complexe berekeningen die het gebruikt en neemt ook meer tijd in beslag door deze ingewikkelde berekeningen.
 
 
@@ -49,7 +50,7 @@ Canny is moelijker te implementeren door de complexe berekeningen die het gebrui
 
 ## Keuze
 
-Na alle voordelen en nadelen op een rij te hebben gezet [tabel 1] is uiteindelijk onze keuze op Canny gevallen. Dot omdat met het implementeren van canny een groot deel van de andere methodes ook word gebruikt en wij
+Na alle voordelen en nadelen op een rij te hebben gezet [tabel 1] is uiteindelijk onze keuze op Canny gevallen. Dot omdat met het implementeren van Canny een groot deel van de andere methodes ook word gebruikt en wij
 hiermee een vergelijking kunnen trekken wat de verbeteringen zijn van Canny tegenover de andere methodes.
 
 
@@ -57,7 +58,7 @@ tabel 1
 
  methode| voordelen| nadelen
 ---|---|--
-     Canny edge detection | Uitstekende prestaties in plaatjes met ruis, en beter in het vinden van edges in alle richtingen  | Vrij complexe berekeningen en daardoor een "zwaar" algoritme
+     Canny edge detection | Uitstekende prestaties in plaatjes met ruis, en beter in het vinden van edges in alle richtingen | Vrij complexe berekeningen en daardoor een "zwaar" algoritme
     Laplacian of Gaussian | Vinden van de juiste plaatsen van de edges door het testen van een groter gebied rondom een pixel | Fout gevoelig in de hoeken bij rondingen en op plaatsen waar het niveau van de grijs intensiteit varieert. Heeft moeite met het vinden van edges in specifieke richting door het gebruik van de Laplacian filter.
           Prewitt / Sobel | Simpelheid van gebruik in het vinden van edges en hun oriëntatie                                  | Gevoelig voor ruis en onnauwkeurig
 Zero crossing (Laplacian) | Detectie van edges in alle directies. Vaste kenmerken in alle richtingen.                         | Reageert op al gevonden edges. Gevoelig voor ruis.
@@ -88,8 +89,8 @@ tabel 2
 **0.015019** | **0.059912** | **0.094907** | **0.059912** | **0.015019**
 **0.003765** | **0.015019** | **0.023792** | **0.015019** | **0.003765**
 
-De tweede stap is een functie die meerdere kernels op een afbeelding kan toepassen en hier het gecombineerde resulaat van terug geven.
-Op deze manier is het mogelij om bijvoorbeeld een Sobel operatie die binnen Canny word gebruikt in een keer uit te voeren zonder de afbeelding tussentijds op te slaan waardoor een gedeelte van het resulaat verloren zou kunnen gaan.
+De tweede stap is een functie die meerdere kernels op een afbeelding kan toepassen en hier het gecombineerde resultaat van terug geven.
+Op deze manier is het mogelijk om bijvoorbeeld een Sobel operatie die binnen Canny word gebruikt in een keer uit te voeren zonder de afbeelding tussentijds op te slaan waardoor een gedeelte van het resultaat verloren zou kunnen gaan.
 
 De derde stap is het vinden van de gradient richting zodat er non maximum supression kan worden toegepast op de edges. 
 ## Evaluatie
