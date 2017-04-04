@@ -16,7 +16,7 @@ IntensityImage *StudentPreProcessing::stepScaleImage(const IntensityImage &image
 IntensityImage *StudentPreProcessing::stepEdgeDetection(const IntensityImage &image) const {
     // First we blur.
     int    radius = 1;
-    double sigma = 0.5;
+    double sigma = 0.1;
 
     kernel_type sobel_X = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
 
@@ -57,23 +57,23 @@ IntensityImage *StudentPreProcessing::stepEdgeDetection(const IntensityImage &im
 
     IntensityImage *surpressedImage = imageSurpressor(*sobelImage, refinedGradientDirection);
 
-    IntensityImage *hystericImage = hysterisch(*surpressedImage, 10, 150);
+    IntensityImage *hystericImage = hysterisch(*surpressedImage, 20, 170);
 
-    IntensityImage *returnImage = ImageFactory::newIntensityImage(hystericImage->getWidth(), hystericImage->getHeight());
+    // IntensityImage *returnImage = ImageFactory::newIntensityImage(hystericImage->getWidth(), hystericImage->getHeight());
 
-    for (size_t i = 0; i < hystericImage->getHeight() * hystericImage->getWidth(); i++) {
-        returnImage->setPixel(i, 255 - hystericImage->getPixel(i));
-    }
+    // for (size_t i = 0; i < hystericImage->getHeight() * hystericImage->getWidth(); i++) {
+    //     returnImage->setPixel(i, 255 - hystericImage->getPixel(i));
+    // }
 
 
-    return returnImage;
+    return hystericImage;
 }
 
 IntensityImage *StudentPreProcessing::stepThresholding(const IntensityImage &image) const {
     IntensityImage *returnImage = ImageFactory::newIntensityImage(image.getWidth(), image.getHeight());
     ;
     for (size_t i = 0; i < image.getHeight() * image.getWidth(); i++) {
-        returnImage->setPixel(i, image.getPixel(i));
+        returnImage->setPixel(i, 255 - image.getPixel(i));
     }
     std::cout << "Klaar met onze kak <3" << '\n';
     return returnImage;
