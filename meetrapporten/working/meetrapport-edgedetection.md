@@ -17,6 +17,7 @@ Wij vergelijken de output van de standaard edge detection tegen onze eigen en ki
 
 ## Resultaten
 
+
 ## Verwerking
 
 ## Conclusie
