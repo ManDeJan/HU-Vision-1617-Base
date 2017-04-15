@@ -253,8 +253,10 @@ IntensityImage *hysterisch(const IntensityImage &image, int thresholdLow, int th
     IntensityImage * returnImage = ImageFactory::newIntensityImage(image.getWidth(), image.getHeight());
     std::queue<ints> nodes;
 
-    // Lekker zoeken tussen de buren die boven de lage threshold zitten of er een buur is die wel boven de hoge threshold valt!
-    // Lekker BFS'en
+   // Alle pixels onder thresholdLow worden meteen op 0 gezet. en alle pixels boven thresholdHigh worden meteen goedgekeurt.
+   // De rest van de pixels die hier tussen in vallen word gekeken of er vanaf een pixel een route te vinden is via andere pixels
+   // die tussen deze treshold vallen die naar een pixel boven deze treshold leid. 
+   // Als dit lukt word de pixel 255 zo niet dan word de pixel 0.
     for (size_t i = 0; i < image.getHeight(); i++) {
         for (size_t j = 0; j < image.getWidth(); j++) {
             if ((image.getPixel(j, i) >= thresholdHigh) && (returnImage->getPixel(j, i) != 255)) {
