@@ -9,13 +9,16 @@
 #include <string>
 #include <vector>
 
+// This returns a gaussian, we swear!
 double gaussian(double x, double mu, double sigma) {
     return std::exp(-(((x - mu) / (sigma)) * ((x - mu) / (sigma))) / 2.0);
 }
 
-typedef std::vector<double>     kernel_row;
-typedef std::vector<kernel_row> kernel_type;
+// Kernel types zijn handig!
+using kernel_row = std::vector<double>;
+using kernel_type = std::vector<kernel_row>;
 
+// Bouwt gaussian kernoltjes!
 kernel_type produce2dGaussianKernel(int kernelRadius, double sigma = 1) {
     // double      sigma = kernelRadius / 2.;
     kernel_type kernel2d(2 * kernelRadius + 1, kernel_row(2 * kernelRadius + 1));
@@ -39,6 +42,7 @@ kernel_type produce2dGaussianKernel(int kernelRadius, double sigma = 1) {
     return kernel2d;
 }
 
+// Es ist ein kernelPrinter, und es print Kernels!!!
 void kernelPrinter(kernel_type kernel) {
     std::cout << std::setprecision(5) << std::fixed;
     for (int row = 0; row < kernel.size(); row++) {
@@ -50,6 +54,7 @@ void kernelPrinter(kernel_type kernel) {
 }
 
 // This function is no longer needed
+// Dont look at it!
 IntensityImage *combineImage(const IntensityImage &image1, const IntensityImage &image2) {
     if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
         // throw "ALLES GAAT FOUT ALLES BRAND WAAROM DOE JE DIT";
@@ -71,9 +76,16 @@ IntensityImage *combineImage(const IntensityImage &image1, const IntensityImage 
     return returnImage;
 }
 
+// Using is way cooler than typedef!
 using gradientImage = std::vector<std::vector<double>>;
 using refinedGradientImage = std::vector<std::vector<uint8_t>>;
 
+/**
+ * This applys kernels!
+ * @param  image   The image you want to apply the kernel to
+ * @param  kernels A vector of kernels you want to apply
+ * @param  merge   A lambda that merges the result of all the kernels
+ */
 IntensityImage *kernelApplyer(const IntensityImage &image, std::vector<kernel_type> kernels,
                               std::function<int(std::vector<int>)> merge =
                               [](std::vector<int> a) {
@@ -90,6 +102,9 @@ IntensityImage *kernelApplyer(const IntensityImage &image, std::vector<kernel_ty
     uint kheight = kwidth;
 
     IntensityImage *returnImage = ImageFactory::newIntensityImage(image.getWidth(), image.getHeight());
+
+    // Resize direction, if we need to calculate that
+    // its a bit of a hack, I know. Didn't want to build a specialised version just for sobel :)
     if (gradientDirection) {
         gradientDirection->resize(image.getWidth());
         for (size_t i = 0; i < image.getWidth(); i++) {
@@ -97,7 +112,10 @@ IntensityImage *kernelApplyer(const IntensityImage &image, std::vector<kernel_ty
         }
     }
 
+    // ducks is the amount of 1's in an image, this was once used for something.
     int ducks = 0;
+
+    // guess what kernel amount means?
     int kernelAmount = kernels.size();
 
     for (int y = 0; y < image.getHeight(); y++) {
@@ -106,10 +124,12 @@ IntensityImage *kernelApplyer(const IntensityImage &image, std::vector<kernel_ty
             std::vector<int> newPekels = { 0 };
             int              newPekel = 0;
             newPekels.resize(kernelAmount);
+
+            // We sort of assume your kernels are the same size, deal with it.
             for (int i = 0; i < kheight; i++) {
                 for (int j = 0; j < kwidth; j++) {
 
-                    // bounds checking
+                    // bounds checking!
                     int realX = x + j - kwidth / 2;
                     int realY = y + i - kheight / 2;
                     if (realX < 0) realX = 0;
@@ -117,11 +137,14 @@ IntensityImage *kernelApplyer(const IntensityImage &image, std::vector<kernel_ty
                     if (realY < 0) realY = 0;
                     if (realY > image.getHeight()) realY = image.getHeight();
 
+                    // APPLY ALL THE KERNELS
                     for (size_t k = 0; k < kernelAmount; k++) {
                         newPekels[k] += image.getPixel(realX, realY) * kernels[k][i][j];
                     }
                 }
             }
+
+            // yeyeye this calculates a gradient is you do something sobel-like.
             if (gradientDirection) {
                 double direction = (atan2(newPekels[0], newPekels[1]) * 180 / M_PI);
                 if (direction < 0) direction += 180;
@@ -129,6 +152,7 @@ IntensityImage *kernelApplyer(const IntensityImage &image, std::vector<kernel_ty
             }
             newPekel = merge(newPekels);
 
+            // More checky bounds!
             if (newPekel > 255) newPekel = 255;
             if (newPekel < 0) newPekel = 0;
 
@@ -139,6 +163,7 @@ IntensityImage *kernelApplyer(const IntensityImage &image, std::vector<kernel_ty
     return returnImage;
 }
 
+// ES REFINES GRADIENTEN!
 refinedGradientImage gradientRefiner(gradientImage &x) {
     refinedGradientImage image;
 
@@ -147,6 +172,7 @@ refinedGradientImage gradientRefiner(gradientImage &x) {
         image[i].resize(x[0].size());
     }
 
+    // Als tussen bepaalde hoekies, wordt een speciefiek hoekie.
     for (size_t i = 0; i < x.size(); i++) {
         for (size_t j = 0; j < x[i].size(); j++) {
             double  direction = x[i][j];
@@ -165,6 +191,7 @@ refinedGradientImage gradientRefiner(gradientImage &x) {
     return image;
 }
 
+// Non max surpressie is echt cool!
 IntensityImage *imageSurpressor(const IntensityImage &image, const refinedGradientImage &hoekies) {
     IntensityImage *returnImage = ImageFactory::newIntensityImage(image.getWidth(), image.getHeight());
     for (size_t i = 0; i < image.getHeight() * image.getWidth(); i++) {
@@ -178,6 +205,7 @@ IntensityImage *imageSurpressor(const IntensityImage &image, const refinedGradie
         for (uint j = 0; j < image.getWidth(); j++) {
             int ax, ay, bx, by;
             int hoek = hoekies[j][i];
+            // Val de buren lastig!
             if (hoek == 0) {
                 ax = j + 1;
                 ay = i;
@@ -200,6 +228,7 @@ IntensityImage *imageSurpressor(const IntensityImage &image, const refinedGradie
                 by = i - 1;
             }
 
+            // plop naar 0 als onze buur groter dan ons is in een minderwaardigheidscomplex.
             if (ax < 0 || ax >= image.getWidth() || ay < 0 || ay >= image.getHeight())
                 continue;
             else if (image.getPixel(ax, ay) > image.getPixel(j, i)) {
@@ -217,11 +246,15 @@ IntensityImage *imageSurpressor(const IntensityImage &image, const refinedGradie
     return returnImage;
 }
 
+
+// WAAAAAAH!
 IntensityImage *hysterisch(const IntensityImage &image, int thresholdLow, int thresholdHigh) {
     using ints = std::pair<int, int>;
     IntensityImage * returnImage = ImageFactory::newIntensityImage(image.getWidth(), image.getHeight());
     std::queue<ints> nodes;
 
+    // Lekker zoeken tussen de buren die boven de lage threshold zitten of er een buur is die wel boven de hoge threshold valt!
+    // Lekker BFS'en
     for (size_t i = 0; i < image.getHeight(); i++) {
         for (size_t j = 0; j < image.getWidth(); j++) {
             if ((image.getPixel(j, i) >= thresholdHigh) && (returnImage->getPixel(j, i) != 255)) {
